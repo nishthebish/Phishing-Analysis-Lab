@@ -1,14 +1,14 @@
 # Phishing Analysis Report - Case 006
 
-**Date:** 2026-06-17 22:16:09
+**Date:** 2026-06-17 22:26:36
 
 ## IOCs Analyzed
 ```
 {
   "urls": [
+    "https://blog1seguimentmydomaine2bra.me/",
     "https://fonts.gstatic.com",
-    "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap",
-    "https://blog1seguimentmydomaine2bra.me/"
+    "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap"
   ],
   "ips": [
     "137.184.34.4"
@@ -24,31 +24,31 @@
 ```
 [
   {
-    "url": "https://fonts.gstatic.com",
+    "url": "https://blog1seguimentmydomaine2bra.me/",
     "malicious": "pending",
     "suspicious": "pending"
   },
   {
-    "url": "https://fonts.gstatic.com",
-    "scan_id": "019ed883-a670-7724-9e4c-606a0bcb531b",
-    "report_url": "https://urlscan.io/result/019ed883-a670-7724-9e4c-606a0bcb531b/"
-  },
-  {
-    "url": "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap",
-    "malicious": "pending",
-    "suspicious": "pending"
-  },
-  {
-    "url": "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap",
+    "url": "https://blog1seguimentmydomaine2bra.me/",
     "error": 400
   },
   {
-    "url": "https://blog1seguimentmydomaine2bra.me/",
+    "url": "https://fonts.gstatic.com",
     "malicious": "pending",
     "suspicious": "pending"
   },
   {
-    "url": "https://blog1seguimentmydomaine2bra.me/",
+    "url": "https://fonts.gstatic.com",
+    "scan_id": "019ed88d-3cd5-72f9-ba74-3553651e9f3c",
+    "report_url": "https://urlscan.io/result/019ed88d-3cd5-72f9-ba74-3553651e9f3c/"
+  },
+  {
+    "url": "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap",
+    "malicious": "pending",
+    "suspicious": "pending"
+  },
+  {
+    "url": "https://fonts.googleapis.com/css2?family=Signika:wght@300;500;700&amp;display=swap",
     "error": 400
   },
   {

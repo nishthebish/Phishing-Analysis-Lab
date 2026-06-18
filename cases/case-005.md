@@ -1,6 +1,6 @@
 # Phishing Analysis Report - Case 005
 
-**Date:** 2026-06-17 22:26:32
+**Date:** 2026-06-17 22:33:01
 
 ## IOCs Analyzed
 ```
@@ -25,14 +25,18 @@
   },
   {
     "url": "http://thaibangkokrestaurant.com/wp-includes/sodium_compat/",
-    "scan_id": "019ed88d-30e0-724b-9d1a-ef10204a83ab",
-    "report_url": "https://urlscan.io/result/019ed88d-30e0-724b-9d1a-ef10204a83ab/"
+    "scan_id": "019ed893-1f5a-7179-88d5-912d9f1364f9",
+    "report_url": "https://urlscan.io/result/019ed893-1f5a-7179-88d5-912d9f1364f9/"
   },
   {
     "ip": "45.142.212.100",
     "abuse_score": 1,
     "country": "MD",
     "total_reports": 1
+  },
+  {
+    "ip": "45.142.212.100",
+    "found": false
   }
 ]
 ```

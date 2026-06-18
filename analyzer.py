@@ -14,6 +14,7 @@ load_dotenv()
 VT_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
 ABUSE_API_KEY = os.getenv("ABUSEIPDB_API_KEY")
 URLSCAN_API_KEY = os.getenv("URLSCAN_API_KEY")
+SHODAN_API_KEY = os.getenv("SHODAN_API_KEY")
 
 
 def check_url_virustotal(url):
@@ -57,6 +58,39 @@ def check_ip_abuseipdb(ip):
     else:
         print(f"    Error: {resp.status_code}")
         return {"ip": ip, "error": resp.status_code}
+
+
+def check_ip_shodan(ip):
+    print(f"\n[Shodan] Checking IP: {ip}")
+    try:
+        resp = requests.get(
+            f"https://api.shodan.io/shodan/host/{ip}?key={SHODAN_API_KEY}"
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            org = data.get("org", "Unknown")
+            country = data.get("country_name", "Unknown")
+            ports = data.get("ports", [])
+            hostnames = data.get("hostnames", [])
+            vulns = list(data.get("vulns", {}).keys())
+            print(f"    Org: {org} | Country: {country}")
+            print(f"    Open Ports: {ports}")
+            if vulns:
+                print(f"    Vulnerabilities: {vulns}")
+            return {
+                "ip": ip,
+                "org": org,
+                "country": country,
+                "open_ports": ports,
+                "hostnames": hostnames,
+                "vulns": vulns,
+            }
+        else:
+            print(f"    Not found in Shodan.")
+            return {"ip": ip, "found": False}
+    except Exception as e:
+        print(f"    Shodan error: {e}")
+        return {"ip": ip, "error": str(e)}
 
 
 def check_url_urlscan(url):
@@ -237,6 +271,8 @@ def run_analysis(case_id, urls=[], ips=[], files=[]):
     for ip in ips:
         result = check_ip_abuseipdb(ip)
         verdicts.append(result)
+        shodan_result = check_ip_shodan(ip)
+        verdicts.append(shodan_result)
 
     for filepath in files:
         file_hash = hash_file(filepath)
@@ -273,6 +309,8 @@ def run_analysis_from_eml(case_id, eml_path):
     for ip in parsed["ips"]:
         result = check_ip_abuseipdb(ip)
         verdicts.append(result)
+        shodan_result = check_ip_shodan(ip)
+        verdicts.append(shodan_result)
 
     for filepath in parsed["attachments"]:
         file_hash = hash_file(filepath)

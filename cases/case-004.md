@@ -1,6 +1,6 @@
 # Phishing Analysis Report - Case 004
 
-**Date:** 2026-06-17 22:26:29
+**Date:** 2026-06-17 22:32:58
 
 ## IOCs Analyzed
 ```
@@ -32,6 +32,10 @@
     "abuse_score": 100,
     "country": "LT",
     "total_reports": 201
+  },
+  {
+    "ip": "194.165.16.11",
+    "found": false
   }
 ]
 ```

@@ -4,6 +4,8 @@ import os
 import hashlib
 from dotenv import load_dotenv
 from datetime import datetime
+import email
+import re
 
 load_dotenv()
 
@@ -81,6 +83,118 @@ def hash_file(filepath):
     print(f"    SHA256: {file_hash}")
     return file_hash
 
+import email
+import re
+from pathlib import Path
+
+def parse_eml(filepath):
+    print(f"\n[EML] Parsing email: {filepath}")
+    with open(filepath, "rb") as f:
+        msg = email.message_from_bytes(f.read())
+
+    # Extract headers
+    sender = str(msg.get("From", "Unknown"))
+    reply_to = str(msg.get("Reply-To", "None"))
+    subject = str(msg.get("Subject", "Unknown"))
+
+    received = msg.get_all("Received", [])
+
+    print(f"    From: {sender}")
+    print(f"    Reply-To: {reply_to}")
+    print(f"    Subject: {subject}")
+
+    # Extract sending IP from Received headers
+    ip_pattern = re.compile(r'\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b')
+    extracted_ips = []
+    for header in received:
+        ips = ip_pattern.findall(header)
+        for ip in ips:
+            if not ip.startswith("127.") and not ip.startswith("10.") and not ip.startswith("192.168."):
+                if ip not in extracted_ips:
+                    extracted_ips.append(ip)
+
+    print(f"    Extracted IPs: {extracted_ips}")
+
+    # Extract URLs from body
+    extracted_urls = []
+    url_pattern = re.compile(r'https?://[^\s<>"\']+')
+    if msg.is_multipart():
+        for part in msg.walk():
+            content_type = part.get_content_type()
+            if content_type in ["text/plain", "text/html"]:
+                try:
+                    body = part.get_payload(decode=True).decode("utf-8", errors="ignore")
+                    urls = url_pattern.findall(body)
+                    extracted_urls.extend(urls)
+                except:
+                    pass
+    else:
+        try:
+            body = msg.get_payload(decode=True).decode("utf-8", errors="ignore")
+            extracted_urls = url_pattern.findall(body)
+        except:
+            pass
+
+    # Deduplicate
+    extracted_urls = list(set(extracted_urls))
+    print(f"    Extracted URLs: {extracted_urls}")
+
+    # Extract attachments
+    attachments = []
+    for part in msg.walk():
+        if part.get_content_disposition() == "attachment":
+            filename = part.get_filename()
+            if filename:
+                save_path = f"samples/{filename}"
+                with open(save_path, "wb") as f:
+                    f.write(part.get_payload(decode=True))
+                attachments.append(save_path)
+                print(f"    Saved attachment: {save_path}")
+
+    return {
+        "sender": sender,
+        "reply_to": reply_to,
+        "subject": subject,
+        "ips": extracted_ips,
+        "urls": extracted_urls,
+        "attachments": attachments
+    }
+
+
+def run_analysis_from_eml(case_id, eml_path):
+    print(f"\n{'='*50}")
+    print(f"Starting EML analysis for Case {case_id}")
+    print(f"{'='*50}")
+
+    parsed = parse_eml(eml_path)
+
+    verdicts = []
+    iocs = {
+        "urls": parsed["urls"],
+        "ips": parsed["ips"],
+        "files": parsed["attachments"],
+        "sender": parsed["sender"],
+        "reply_to": parsed["reply_to"],
+        "subject": parsed["subject"]
+    }
+
+    for url in parsed["urls"]:
+        result = check_url_virustotal(url)
+        verdicts.append(result)
+        urlscan_result = check_url_urlscan(url)
+        verdicts.append(urlscan_result)
+
+    for ip in parsed["ips"]:
+        result = check_ip_abuseipdb(ip)
+        verdicts.append(result)
+
+    for filepath in parsed["attachments"]:
+        file_hash = hash_file(filepath)
+        result = check_hash_virustotal(file_hash)
+        verdicts.append(result)
+
+    generate_report(case_id, iocs, verdicts)
+    print(f"\nEML analysis complete for Case {case_id}")
 
 def check_hash_virustotal(file_hash):
     print(f"\n[VT] Checking hash: {file_hash}")
@@ -208,4 +322,8 @@ if __name__ == "__main__":
         ips=["45.142.212.100"],
         files=[],
     )
-    
+    # Case 006 - EML parsing from raw phishing email
+    run_analysis_from_eml(
+        case_id="006",
+        eml_path="samples/sample-1.eml"
+    )

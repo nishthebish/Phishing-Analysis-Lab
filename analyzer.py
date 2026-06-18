@@ -8,6 +8,7 @@ import glob
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
+from google import genai
 
 load_dotenv()
 
@@ -15,6 +16,7 @@ VT_API_KEY = os.getenv("VIRUSTOTAL_API_KEY")
 ABUSE_API_KEY = os.getenv("ABUSEIPDB_API_KEY")
 URLSCAN_API_KEY = os.getenv("URLSCAN_API_KEY")
 SHODAN_API_KEY = os.getenv("SHODAN_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 def check_url_virustotal(url):
@@ -321,6 +323,47 @@ def run_analysis_from_eml(case_id, eml_path):
     print(f"\nEML analysis complete for Case {case_id}")
 
 
+def generate_detection_rules(case_id):
+    print(f"\n[AI] Generating detection rules for Case {case_id}...")
+
+    case_file = f"cases/case-{case_id}.md"
+    with open(case_file, "r", encoding="utf-8", errors="ignore") as f:
+        case_content = f.read()
+
+    prompt = f"""You are a SOC detection engineer. Read this phishing analysis case report
+and generate the following:
+
+1. A Splunk SPL query to detect this threat in a SIEM
+2. A firewall/proxy block rule recommendation
+3. An email gateway filter rule recommendation
+
+Be specific — use the actual IOCs (IPs, domains, URLs) from the report.
+Format each section with a clear header.
+Keep it concise and practical — these should be copy-paste ready for a SOC analyst.
+
+Case Report:
+{case_content}"""
+
+    try:
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
+        rules = response.text
+
+        with open(case_file, "a", encoding="utf-8") as f:
+            f.write("\n## AI-Generated Detection Rules\n\n")
+            f.write(rules)
+            f.write("\n")
+
+        print(f"    Detection rules appended to {case_file}")
+        return rules
+    except Exception as e:
+        print(f"    Gemini error: {e}")
+        return None
+
+
 def generate_summary():
     cases = sorted(glob.glob("cases/case-*.md"))
     total = len(cases)
@@ -426,6 +469,10 @@ if __name__ == "__main__":
         case_id="006",
         eml_path="samples/sample-1.eml"
     )
+
+    # Generate AI detection rules for each case
+    for case_num in ["001", "002", "003", "004", "005", "006"]:
+        generate_detection_rules(case_num)
 
     # Generate summary report
     generate_summary()

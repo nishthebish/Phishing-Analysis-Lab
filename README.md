@@ -39,6 +39,7 @@ mappings.
 | URLScan.io API | URL scanning and screenshot capture |
 | Shodan API | Open port enumeration and infrastructure intel |
 | Python (requests, dotenv) | Pipeline automation |
+| Google Gemini API | AI-generated Splunk SPL detection rules and response recommendations |
 
 
 \## MITRE ATT\&CK Coverage
@@ -111,7 +112,9 @@ phishing-analysis-lab/
 
 
 
-\## Usage
+\> **Note:** AI detection rule generation requires a Google Gemini API key with available quota. Free tier users may need to run cases individually to stay within rate limits.
+
+## Usage
 
 
 

@@ -32,4 +32,4 @@
 | Spearphishing Attachment | T1566.001 |
 | Spearphishing Link | T1566.002 |
 
-*Generated: 2026-06-17 22:33:06*
+*Generated: 2026-06-17 23:20:36*

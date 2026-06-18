@@ -1,0 +1,11 @@
+case_id,type,indicator,verdict,source
+001,url,http://malware.wicar.org/data/ms14_064_ole_not_xp.html,suspicious,VirusTotal/URLScan
+001,ip,185.220.101.45,malicious,AbuseIPDB (100/100 - 124 reports - Tor exit node - DE)
+002,url,http://www.360pps.net/wp-includes/pomo/paypal/,suspicious,VirusTotal (DNS no longer resolves)
+002,ip,91.108.4.1,benign,AbuseIPDB (0/100 - 0 reports - NL)
+003,url,http://inexistente.lojaclothing.com.br/wp-admin/css/colors/midnight/,suspicious,VirusTotal (DNS no longer resolves)
+003,ip,185.220.101.182,malicious,AbuseIPDB (100/100 - 97 reports - Tor exit node - DE)
+004,url,http://arraiolosmktplace.com/wp-admin/,suspicious,VirusTotal (DNS no longer resolves)
+004,ip,194.165.16.11,malicious,AbuseIPDB (100/100 - 201 reports - LT)
+005,url,http://thaibangkokrestaurant.com/wp-includes/sodium_compat/,suspicious,VirusTotal/URLScan
+005,ip,45.142.212.100,benign,AbuseIPDB (1/100 - 1 report - MD)

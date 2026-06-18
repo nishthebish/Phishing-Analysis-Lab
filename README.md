@@ -33,17 +33,12 @@ mappings.
 
 
 | Tool | Purpose |
-
 |---|---|
-
 | VirusTotal API | URL and file hash reputation |
-
 | AbuseIPDB API | IP abuse scoring and geolocation |
-
 | URLScan.io API | URL scanning and screenshot capture |
-
+| Shodan API | Open port enumeration and infrastructure intel |
 | Python (requests, dotenv) | Pipeline automation |
-
 
 
 \## MITRE ATT\&CK Coverage
